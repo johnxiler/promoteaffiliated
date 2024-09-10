@@ -54,11 +54,15 @@
     </div>
 
     <!-- Firebase App (the core Firebase SDK) -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+    <!-- <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script> -->
     <!-- Firebase Realtime Database -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js"></script>
+    <!-- <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js"></script> -->
     <!-- Firebase configuration -->
-    <script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-analytics.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
         // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAZHD5z6JQnp90onGCmV7GNh4l9HbotzoM",
@@ -71,16 +75,17 @@
         };
 
         // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
         // Reference to the Realtime Database
-        const database = firebase.database();
+        // const database = firebase.database();
 
         // Fetch and display products
         document.addEventListener('DOMContentLoaded', function() {
-            const productsRef = database.ref('products');
+            const productsRef = ref(db , 'products');
             productsRef.once('value').then(snapshot => {
-                const products = snapshot.val();
+                const products = snapshot.get(productsRef);
                 const container = document.getElementById('products-container');
                 
                 for (const key in products) {
